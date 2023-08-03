@@ -29,19 +29,28 @@ export class AppComponent implements OnInit {
         new ParkingSlot(idx, this.parkingSlotSizes[idx], this.availableParkingSlots[idx])
       );
     }
-    console.log(this.parkingSlots);
 
-    this.parkVehicle(this.smallVehicle);
-    this.parkVehicle(this.mediumVehicle);
-    this.parkVehicle(this.largeVehicle);
-    this.parkVehicle(this.smallVehicle);
-    this.parkVehicle(this.mediumVehicle);
+    try {
+      // TODO: implement buttons for this
+      this.parkVehicle(this.smallVehicle);
+      this.parkVehicle(this.mediumVehicle);
+      this.parkVehicle(this.largeVehicle);
+  
+      this.unparkVehicle(this.smallVehicle);
+      this.unparkVehicle(this.mediumVehicle);
+      this.unparkVehicle(this.largeVehicle); 
+    } catch (error) {
+      console.error(error);
+    }
+
+    console.log('done');
   }
 
   public parkVehicle(vehicle: Vehicle) {
     const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
     if (bestParkingSlot) {
       bestParkingSlot.isAvailable = false;
+      vehicle.parkingSlot = bestParkingSlot.id;
       vehicle.timeIn = Date.now();
       console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
     } else {
@@ -49,8 +58,13 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public unparkVehicle() {
-    
+  public unparkVehicle(vehicle: Vehicle) {
+    const reservedSlot = this.parkingSlots.find(parkingSlot => parkingSlot.id === vehicle.parkingSlot);
+    if (!reservedSlot) throw new Error(`Parking slot ${vehicle.parkingSlot} not found!`);
+    reservedSlot.isAvailable = true;
+
+    // TODO: return charge difference
+    const timeDifference = Date.now() - vehicle.timeIn;
   }
 
   private getEntranceNumber() {
@@ -71,11 +85,10 @@ export class AppComponent implements OnInit {
 }
 
 class Vehicle {
-  parkingSlot: number = 0;
+  parkingSlot!: string;
   size: number = 0;
   totalCharge: number = 0;
   timeIn: number = 0;
-  timeOut: number = 0;
 
   constructor(size: number) {
     if (size > 3) throw new Error('Invalid vehicle size!');
@@ -90,6 +103,9 @@ class ParkingSlot {
   isAvailable: boolean = true;
 
   constructor(id: string, size: number, distances: Array<number>) {
+    if (size > 3) throw new Error('Invalid parking slot size!');
+    if (distances.length !== 3) throw new Error('Number of distances should be equal to number of entrances!');
+    // TODO: entrance count should be dynamic
     this.id = id;
     this.size = size;
     this.distances = distances;

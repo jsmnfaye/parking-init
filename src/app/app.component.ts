@@ -9,8 +9,8 @@ export class AppComponent implements OnInit {
   title = 'parking-system';
   entranceCount: number = 3;
   entranceQueues = [0, 0, 0];
-  availableParkingSlots: Array<Array<number>> = [[4, 5, 6], [1, 2, 4], [6, 7, 8], [9, 1, 4]];
-  parkingSlotSizes: Array<number> = [0, 2, 1, 1]
+  availableParkingSlots: Array<Array<number>> = [[4, 5, 6], [1, 2, 4], [6, 7, 8], [9, 1, 4], [3, 2, 5]];
+  parkingSlotSizes: Array<number> = [0, 2, 1, 1, 2]
   parkingSlots: Array<ParkingSlot> = [];
 
   // test cases
@@ -34,34 +34,39 @@ export class AppComponent implements OnInit {
     this.parkVehicle(this.smallVehicle);
     this.parkVehicle(this.mediumVehicle);
     this.parkVehicle(this.largeVehicle);
+    this.parkVehicle(this.smallVehicle);
+    this.parkVehicle(this.mediumVehicle);
   }
 
   public parkVehicle(vehicle: Vehicle) {
-    const entranceNumber = this.getEntranceNumber();
-    // const freeSlot = this.availableParkingSlots.map(arr => arr[entranceNumber]).sort()[0];
-    const freeSlots = this.parkingSlots.filter(parkingSlot => 
-      // get slots that the car can fit in
-      (parkingSlot.isAvailable && vehicle.size === 2 && parkingSlot.size === 2) ||
-      (parkingSlot.isAvailable && vehicle.size === 1 && parkingSlot.size > 0) ||
-      (parkingSlot.isAvailable && vehicle.size === 0 && parkingSlot.size >= 0)
-    ).map(parkingSlot => parkingSlot.distances[entranceNumber]).sort()[0];
-    
-      // then sort the distances in ascending order with respect to entranceNumber
-
-    // TODO: set parking slot availability to 'false'
-    // TODO: set time in
-
-    // vehicle.parkingSlot = this.availableParkingSlots.findIndex(arr => arr[entranceNumber] === freeSlot);
-    vehicle.timeIn = Date.now();
+    const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
+    if (bestParkingSlot) {
+      bestParkingSlot.isAvailable = false;
+      vehicle.timeIn = Date.now();
+      console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
+    } else {
+      console.log(`No more free slots for Vehicle ${vehicle.size}`);
+    }
   }
 
   public unparkVehicle() {
-
+    
   }
 
   private getEntranceNumber() {
     const queueCount = this.entranceQueues.sort((a, b) => b - a)[0];
     return this.entranceQueues.findIndex(n => n === queueCount);
+  }
+
+  private getBestParkingSlot(vehicleSize: number, entranceNumber: number) {
+    // Right now I'm prioritizing distance over size. Is this a good trade-off?
+    const freeSlots = this.parkingSlots.filter(parkingSlot =>
+      (parkingSlot.isAvailable && vehicleSize === 2 && parkingSlot.size === 2) ||
+      (parkingSlot.isAvailable && vehicleSize === 1 && parkingSlot.size > 0) ||
+      (parkingSlot.isAvailable && vehicleSize === 0 && parkingSlot.size >= 0)
+    );
+    const closestSlot = freeSlots.map(parkingSlot => parkingSlot.distances[entranceNumber]).sort()[0];
+    return freeSlots.find(parkingSlot => parkingSlot.distances[entranceNumber] === closestSlot);
   }
 }
 

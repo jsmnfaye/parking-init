@@ -1,16 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'parking-system';
   entranceCount: number = 3;
   entranceQueues = [0, 0, 0];
   availableParkingSlots: Array<Array<number>> = [[4, 5, 6], [1, 2, 4], [6, 7 ,8], [9, 1, 4]];
   parkingSlotSizes: Array<number> = [0, 2, 1, 1]
+  parkingSlots: Array<ParkingSlot> = [];
+
+  // test cases
+  smallVehicle: Vehicle = new Vehicle(0);
+  mediumVehicle: Vehicle = new Vehicle(1);
+  largeVehicle: Vehicle = new Vehicle(2);
+
+  ngOnInit() {    
+    if (this.availableParkingSlots.length !== this.parkingSlotSizes.length) {
+      throw new Error('Different numbers of parking slot distances and sizes; should be equal!');
+    }
+    // setup dummy parking slots
+    // should be randomized in the future
+    for (const idx in this.parkingSlotSizes) {
+      this.parkingSlots.push(
+        new ParkingSlot(idx, this.parkingSlotSizes[idx], this.availableParkingSlots[idx])
+      );
+    }
+    console.log(this.parkingSlots);
+  }
 
   public parkVehicle(vehicle: Vehicle) {
     const queueCount = this.entranceQueues.sort((a, b) => b - a)[0];
@@ -40,11 +60,12 @@ class Vehicle {
 }
 
 class ParkingSlot {
-  id: number = 0;
+  id: string;
   size: number = 0;
   distances: Array<number> = [];
+  isAvailable: boolean = true;
 
-  constructor(id: number, size: number, distances: Array<number>) {
+  constructor(id: string, size: number, distances: Array<number>) {
     this.id = id;
     this.size = size;
     this.distances = distances;

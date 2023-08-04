@@ -36,9 +36,9 @@ export class AppComponent implements OnInit {
       this.parkVehicle(this.mediumVehicle);
       this.parkVehicle(this.largeVehicle);
   
-      this.unparkVehicle(this.smallVehicle);
+      // this.unparkVehicle(this.smallVehicle);
       this.unparkVehicle(this.mediumVehicle);
-      this.unparkVehicle(this.largeVehicle); 
+      // this.unparkVehicle(this.largeVehicle); 
     } catch (error) {
       console.error(error);
     }
@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
     if (bestParkingSlot) {
       bestParkingSlot.isAvailable = false;
       vehicle.parkingSlot = bestParkingSlot.id;
-      vehicle.timeIn = Date.now();
+      vehicle.timeIn = new Date().getTime();
       console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
     } else {
       console.log(`No more free slots for Vehicle ${vehicle.size}`);
@@ -62,9 +62,25 @@ export class AppComponent implements OnInit {
     const reservedSlot = this.parkingSlots.find(parkingSlot => parkingSlot.id === vehicle.parkingSlot);
     if (!reservedSlot) throw new Error(`Parking slot ${vehicle.parkingSlot} not found!`);
     reservedSlot.isAvailable = true;
+    const charge = this.getTotalCharge(vehicle.timeIn, vehicle.size, new Date('Aug 5, 23 21:55').getTime());
+    console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
+    // TODO: bug! new Date('Aug 5, 23 21:55').getTime()) % 3 doesn't work in extra hours
+  }
 
-    // TODO: return charge difference
-    const timeDifference = Date.now() - vehicle.timeIn;
+  private getTotalCharge(timeIn: number, vehicleSize: number, testTime: number = 0) {
+    // TODO: compute for 24hrs & if car comes back within an hour
+    const clockOut = testTime || new Date().getTime();
+    const timeInHours = ((clockOut - timeIn) / 1000)/3600;
+    let totalCharge = 40;
+
+    if (timeInHours > 3.5) {
+      const extraHours = Math.round(timeInHours % 3);
+      if (vehicleSize === 0) totalCharge += extraHours*20;
+      else if (vehicleSize === 1) totalCharge += extraHours*60;
+      else if (vehicleSize === 2) totalCharge += extraHours*100;
+    }
+
+    return totalCharge;
   }
 
   private getEntranceNumber() {
@@ -74,6 +90,7 @@ export class AppComponent implements OnInit {
 
   private getBestParkingSlot(vehicleSize: number, entranceNumber: number) {
     // Right now I'm prioritizing distance over size. Is this a good trade-off?
+    // 08.04.23: no, it's not a good trade-off hahaha
     const freeSlots = this.parkingSlots.filter(parkingSlot =>
       (parkingSlot.isAvailable && vehicleSize === 2 && parkingSlot.size === 2) ||
       (parkingSlot.isAvailable && vehicleSize === 1 && parkingSlot.size > 0) ||

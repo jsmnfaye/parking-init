@@ -62,22 +62,25 @@ export class AppComponent implements OnInit {
     const reservedSlot = this.parkingSlots.find(parkingSlot => parkingSlot.id === vehicle.parkingSlot);
     if (!reservedSlot) throw new Error(`Parking slot ${vehicle.parkingSlot} not found!`);
     reservedSlot.isAvailable = true;
-    const charge = this.getTotalCharge(vehicle.timeIn, vehicle.size, new Date('Aug 5, 23 21:27').getTime());
+
+    const charge = this.getTotalCharge(vehicle.timeIn, reservedSlot.size, new Date('Aug 8, 23 20:30').getTime());
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
     // TODO: bug! new Date('Aug 5, 23 21:55').getTime()) % 3 doesn't work in extra hours
   }
 
-  private getTotalCharge(timeIn: number, vehicleSize: number, testTime: number = 0) {
-    // TODO: compute for 24hrs & if car comes back within an hour
+  private getTotalCharge(timeIn: number, parkingSlotSize: number, testTime: number = 0) {
+    // TODO: if car comes back within an hour
     const clockOut = testTime || new Date().getTime();
     const timeInHours = ((clockOut - timeIn) / 1000)/3600;
+    const multiplier = [20, 60, 100];
     let totalCharge = 40;
 
-    if (timeInHours > 3.5) {
-      const extraHours = Math.round(timeInHours - 3);
-      if (vehicleSize === 0) totalCharge += extraHours*20;
-      else if (vehicleSize === 1) totalCharge += extraHours*60;
-      else if (vehicleSize === 2) totalCharge += extraHours*100;
+    if (timeInHours >= 24) {
+      totalCharge += Math.floor(timeInHours / 24) * 5000;
+      totalCharge += Math.ceil(timeInHours % 24) * multiplier[parkingSlotSize];
+    } else if (timeInHours > 3) {
+      const extraHours = Math.ceil(timeInHours - 3);
+      totalCharge += extraHours * multiplier[parkingSlotSize];
     }
 
     return totalCharge;

@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   title = 'parking-system';
+
   entranceCount: number = 3;
   entranceQueues = [0, 0, 0];
   availableParkingSlots: Array<Array<number>> = [[4, 5, 6], [1, 2, 4], [6, 7, 8], [9, 1, 4], [3, 2, 5]];
@@ -19,11 +20,11 @@ export class AppComponent implements OnInit {
   largeVehicle: Vehicle = new Vehicle(2);
 
   ngOnInit() {
+    // prepare data
     if (this.availableParkingSlots.length !== this.parkingSlotSizes.length) {
       throw new Error('Different numbers of parking slot distances and sizes; should be equal!');
     }
-    // setup dummy parking slots
-    // should be randomized in the future
+    // setup dummy parking slots; should be randomized in the future
     for (const idx in this.parkingSlotSizes) {
       this.parkingSlots.push(
         new ParkingSlot(idx, this.parkingSlotSizes[idx], this.availableParkingSlots[idx])
@@ -31,6 +32,7 @@ export class AppComponent implements OnInit {
     }
 
     try {
+      // Test with dummy timestamps
       // TODO: implement buttons for this
       this.parkVehicle(this.mediumVehicle);
       this.unparkVehicle(this.mediumVehicle);
@@ -47,13 +49,14 @@ export class AppComponent implements OnInit {
     console.log('done');
   }
 
-  public parkVehicle(vehicle: Vehicle, timeInTest: number = 0) {
+  public parkVehicle(vehicle: Vehicle, timeInTest: number = 0): void {
     const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
     if (bestParkingSlot) {
       bestParkingSlot.isAvailable = false;
       vehicle.parkingSlot = bestParkingSlot.id;
-      vehicle.timeIn = timeInTest || new Date().getTime();
+      vehicle.timeIn = timeInTest || new Date().getTime();  // TODO: turn into function
 
+      // TODO: what if more than 3 hours siyang nawala tas bumalik within an hour?? not only 40 should be discounted
       if (vehicle.timeOut && (vehicle.timeIn - vehicle.timeOut) / 1000 < 3600) {
         vehicle.timeIn = vehicle.previousTimeIn;  // retain previous time-in if came back within an hour
         vehicle.paidPreviousBalance = true;
@@ -63,11 +66,11 @@ export class AppComponent implements OnInit {
 
       console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
     } else {
-      console.log('No more slots available!');
+      throw new Error('No more slots available!');
     }
   }
 
-  public unparkVehicle(vehicle: Vehicle, testTime: number = 0) {
+  public unparkVehicle(vehicle: Vehicle, testTime: number = 0): void {
     const reservedSlot = this.parkingSlots.find(parkingSlot => parkingSlot.id === vehicle.parkingSlot);
     if (!reservedSlot) throw new Error(`Parking slot ${vehicle.parkingSlot} not found!`);
 
@@ -78,11 +81,10 @@ export class AppComponent implements OnInit {
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
   }
 
-  private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testTime: number = 0) {
-    const clockOut = testTime || new Date().getTime();
-    const timeInHours = ((clockOut - vehicle.timeIn) / 1000) / 3600;
+  private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testTime: number = 0): number {
+    const timeInHours = ((testTime || new Date().getTime() - vehicle.timeIn) / 1000) / 3600;
     const multiplier = [20, 60, 100];
-    let totalCharge = vehicle.paidPreviousBalance ? 0 : 40;
+    let totalCharge = vehicle.paidPreviousBalance ? 0 : 40;  // TODO: ibawas na lang yung previous na binayaran
 
     if (timeInHours >= 24) {
       totalCharge += Math.floor(timeInHours / 24) * 5000;                        // count 24-hour chunks
@@ -94,12 +96,12 @@ export class AppComponent implements OnInit {
     return totalCharge;
   }
 
-  private getEntranceNumber() {
+  private getEntranceNumber(): number {
     const queueCount = this.entranceQueues.sort((a, b) => b - a)[0];
     return this.entranceQueues.findIndex(n => n === queueCount);
   }
 
-  private getBestParkingSlot(vehicleSize: number, entranceNumber: number) {
+  private getBestParkingSlot(vehicleSize: number, entranceNumber: number): ParkingSlot | undefined {
     // Right now I'm prioritizing distance over size. Is this a good trade-off?
     // 08.04.23: no, it's not a good trade-off hahaha
     const freeSlots = this.parkingSlots.filter(parkingSlot =>

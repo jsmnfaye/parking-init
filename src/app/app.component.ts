@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
       vehicle.timeIn = new Date().getTime();
       console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
     } else {
-      console.log(`No more free slots for Vehicle ${vehicle.size}`);
+      console.log('No more slots available!');
     }
   }
 
@@ -69,7 +69,6 @@ export class AppComponent implements OnInit {
   }
 
   private getTotalCharge(timeIn: number, parkingSlotSize: number, testTime: number = 0) {
-    // TODO: if car comes back within an hour
     const clockOut = testTime || new Date().getTime();
     const timeInHours = ((clockOut - timeIn) / 1000)/3600;
     const multiplier = [20, 60, 100];
@@ -108,6 +107,7 @@ class Vehicle {
   size: number = 0;
   totalCharge: number = 0;
   timeIn: number = 0;
+  lastTimeIn: number = 0;
 
   constructor(size: number) {
     if (size > 3) throw new Error('Invalid vehicle size!');

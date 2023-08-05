@@ -62,7 +62,7 @@ export class AppComponent implements OnInit {
     const reservedSlot = this.parkingSlots.find(parkingSlot => parkingSlot.id === vehicle.parkingSlot);
     if (!reservedSlot) throw new Error(`Parking slot ${vehicle.parkingSlot} not found!`);
     reservedSlot.isAvailable = true;
-    const charge = this.getTotalCharge(vehicle.timeIn, vehicle.size, new Date('Aug 5, 23 21:55').getTime());
+    const charge = this.getTotalCharge(vehicle.timeIn, vehicle.size, new Date('Aug 5, 23 21:27').getTime());
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
     // TODO: bug! new Date('Aug 5, 23 21:55').getTime()) % 3 doesn't work in extra hours
   }
@@ -74,7 +74,7 @@ export class AppComponent implements OnInit {
     let totalCharge = 40;
 
     if (timeInHours > 3.5) {
-      const extraHours = Math.round(timeInHours % 3);
+      const extraHours = Math.round(timeInHours - 3);
       if (vehicleSize === 0) totalCharge += extraHours*20;
       else if (vehicleSize === 1) totalCharge += extraHours*60;
       else if (vehicleSize === 2) totalCharge += extraHours*100;

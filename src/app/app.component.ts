@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
       // TODO: implement buttons for this
       this.parkVehicle(this.mediumVehicle);
       this.unparkVehicle(this.mediumVehicle);
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 19:55'));
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:00'));
       this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:03'));
       this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:40'));
       this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 22:50'));
@@ -74,7 +74,8 @@ export class AppComponent implements OnInit {
   }
 
   private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testDate: Date = new Date()): number {
-    const timeInHours = ((testDate.getTime() || new Date().getTime() - vehicle.timeIn.getTime()) / 1000) / 3600;
+    const clockOut = testDate.getTime() || new Date().getTime();
+    const timeInHours = ((clockOut - vehicle.timeIn.getTime()) / 1000)/3600;
     const multiplier = [20, 60, 100];
     let totalCharge = vehicle.paidPreviousBalance ? 0 : 40;  // TODO: ibawas na lang yung previous na binayaran
 

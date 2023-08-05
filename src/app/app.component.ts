@@ -52,18 +52,10 @@ export class AppComponent implements OnInit {
   public parkVehicle(vehicle: Vehicle, timeInTest: number = 0): void {
     const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
     if (bestParkingSlot) {
-      bestParkingSlot.isAvailable = false;
-      vehicle.parkingSlot = bestParkingSlot.id;
-      vehicle.timeIn = timeInTest || new Date().getTime();  // TODO: turn into function
-
+      bestParkingSlot.setAvailability(false);
+      vehicle.setParkingSlot(bestParkingSlot.id);
+      vehicle.setTimeIn(timeInTest || new Date().getTime());
       // TODO: what if more than 3 hours siyang nawala tas bumalik within an hour?? not only 40 should be discounted
-      if (vehicle.timeOut && (vehicle.timeIn - vehicle.timeOut) / 1000 < 3600) {
-        vehicle.timeIn = vehicle.previousTimeIn;  // retain previous time-in if came back within an hour
-        vehicle.paidPreviousBalance = true;
-      } else {
-        vehicle.previousTimeIn = vehicle.timeIn;
-      }
-
       console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
     } else {
       throw new Error('No more slots available!');
@@ -75,8 +67,8 @@ export class AppComponent implements OnInit {
     if (!reservedSlot) throw new Error(`Parking slot ${vehicle.parkingSlot} not found!`);
 
     const charge = this.getTotalCharge(vehicle, reservedSlot.size, testTime);
-    reservedSlot.isAvailable = true;
-    vehicle.timeOut = testTime || new Date().getTime();
+    reservedSlot.setAvailability(true);
+    vehicle.setTimeOut(testTime || new Date().getTime());
     vehicle.paidPreviousBalance = false;
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
   }
@@ -129,6 +121,23 @@ class Vehicle {
   }
 
   // TODO: move park and unpark functions here?
+  setParkingSlot(parkingSlotId: string) {
+    this.parkingSlot = parkingSlotId;
+  }
+
+  setTimeIn(time: number) {
+    this.timeIn = time;
+    if (this.timeOut && (this.timeIn - this.timeOut) / 1000 < 3600) {
+      this.timeIn = this.previousTimeIn;  // retain previous time-in if came back within an hour
+      this.paidPreviousBalance = true;
+    } else {
+      this.previousTimeIn = time;
+    }
+  }
+
+  setTimeOut(time: number) {
+
+  }
 }
 
 class ParkingSlot {
@@ -144,5 +153,9 @@ class ParkingSlot {
     this.id = id;
     this.size = size;
     this.distances = distances;
+  }
+
+  setAvailability(available: boolean) {
+    this.isAvailable = available;
   }
 }

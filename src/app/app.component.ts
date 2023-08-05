@@ -32,13 +32,14 @@ export class AppComponent implements OnInit {
 
     try {
       // TODO: implement buttons for this
-      this.parkVehicle(this.smallVehicle);
       this.parkVehicle(this.mediumVehicle);
-      this.parkVehicle(this.largeVehicle);
-  
-      // this.unparkVehicle(this.smallVehicle);
       this.unparkVehicle(this.mediumVehicle);
-      // this.unparkVehicle(this.largeVehicle); 
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 19:40').getTime());
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:03').getTime());
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:40').getTime());
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 22:50').getTime());
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 23:55').getTime());
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 00:50').getTime());
     } catch (error) {
       console.error(error);
     }
@@ -46,33 +47,42 @@ export class AppComponent implements OnInit {
     console.log('done');
   }
 
-  public parkVehicle(vehicle: Vehicle) {
+  public parkVehicle(vehicle: Vehicle, timeInTest: number = 0) {
     const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
     if (bestParkingSlot) {
       bestParkingSlot.isAvailable = false;
       vehicle.parkingSlot = bestParkingSlot.id;
-      vehicle.timeIn = new Date().getTime();
+      vehicle.timeIn = timeInTest || new Date().getTime();
+
+      if (vehicle.timeOut && (vehicle.timeIn - vehicle.timeOut) / 1000 < 3600) {
+        vehicle.timeIn = vehicle.previousTimeIn;  // retain previous time-in if came back within an hour
+        vehicle.paidPreviousBalance = true;
+      } else {
+        vehicle.previousTimeIn = vehicle.timeIn;
+      }
+
       console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
     } else {
       console.log('No more slots available!');
     }
   }
 
-  public unparkVehicle(vehicle: Vehicle) {
+  public unparkVehicle(vehicle: Vehicle, testTime: number = 0) {
     const reservedSlot = this.parkingSlots.find(parkingSlot => parkingSlot.id === vehicle.parkingSlot);
     if (!reservedSlot) throw new Error(`Parking slot ${vehicle.parkingSlot} not found!`);
-    reservedSlot.isAvailable = true;
 
-    const charge = this.getTotalCharge(vehicle.timeIn, reservedSlot.size, new Date('Aug 8, 23 20:30').getTime());
+    const charge = this.getTotalCharge(vehicle, reservedSlot.size, testTime);
+    reservedSlot.isAvailable = true;
+    vehicle.timeOut = testTime || new Date().getTime();
+    vehicle.paidPreviousBalance = false;
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
-    // TODO: bug! new Date('Aug 5, 23 21:55').getTime()) % 3 doesn't work in extra hours
   }
 
-  private getTotalCharge(timeIn: number, parkingSlotSize: number, testTime: number = 0) {
+  private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testTime: number = 0) {
     const clockOut = testTime || new Date().getTime();
-    const timeInHours = ((clockOut - timeIn) / 1000)/3600;
+    const timeInHours = ((clockOut - vehicle.timeIn) / 1000) / 3600;
     const multiplier = [20, 60, 100];
-    let totalCharge = 40;
+    let totalCharge = vehicle.paidPreviousBalance ? 0 : 40;
 
     if (timeInHours >= 24) {
       totalCharge += Math.floor(timeInHours / 24) * 5000;                        // count 24-hour chunks
@@ -107,12 +117,16 @@ class Vehicle {
   size: number = 0;
   totalCharge: number = 0;
   timeIn: number = 0;
-  lastTimeIn: number = 0;
+  timeOut: number = 0;
+  previousTimeIn: number = 0;
+  paidPreviousBalance: boolean = false;
 
   constructor(size: number) {
     if (size > 3) throw new Error('Invalid vehicle size!');
     this.size = size;
   }
+
+  // TODO: move park and unpark functions here?
 }
 
 class ParkingSlot {

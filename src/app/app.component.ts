@@ -36,12 +36,12 @@ export class AppComponent implements OnInit {
       // TODO: implement buttons for this
       this.parkVehicle(this.mediumVehicle);
       this.unparkVehicle(this.mediumVehicle);
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 19:40').getTime());
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:03').getTime());
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:40').getTime());
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 22:50').getTime());
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 23:55').getTime());
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 00:50').getTime());
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 19:55'));
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:03'));
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:40'));
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 22:50'));
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 23:55'));
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 00:50'));
     } catch (error) {
       console.error(error);
     }
@@ -49,12 +49,12 @@ export class AppComponent implements OnInit {
     console.log('done');
   }
 
-  public parkVehicle(vehicle: Vehicle, timeInTest: number = 0): void {
+  public parkVehicle(vehicle: Vehicle, dateInTest: Date = new Date()): void {
     const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
     if (bestParkingSlot) {
       bestParkingSlot.setAvailability(false);
       vehicle.setParkingSlot(bestParkingSlot.id);
-      vehicle.setTimeIn(timeInTest || new Date().getTime());
+      vehicle.setTimeIn(dateInTest || new Date());
       // TODO: what if more than 3 hours siyang nawala tas bumalik within an hour?? not only 40 should be discounted
       console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
     } else {
@@ -62,19 +62,19 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public unparkVehicle(vehicle: Vehicle, testTime: number = 0): void {
+  public unparkVehicle(vehicle: Vehicle, testDate: Date = new Date()): void {
     const reservedSlot = this.parkingSlots.find(parkingSlot => parkingSlot.id === vehicle.parkingSlot);
     if (!reservedSlot) throw new Error(`Parking slot ${vehicle.parkingSlot} not found!`);
 
-    const charge = this.getTotalCharge(vehicle, reservedSlot.size, testTime);
+    const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
     reservedSlot.setAvailability(true);
-    vehicle.setTimeOut(testTime || new Date().getTime());
+    vehicle.setTimeOut(testDate || new Date());
     vehicle.paidPreviousBalance = false;
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
   }
 
-  private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testTime: number = 0): number {
-    const timeInHours = ((testTime || new Date().getTime() - vehicle.timeIn) / 1000) / 3600;
+  private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testDate: Date = new Date()): number {
+    const timeInHours = ((testDate.getTime() || new Date().getTime() - vehicle.timeIn.getTime()) / 1000) / 3600;
     const multiplier = [20, 60, 100];
     let totalCharge = vehicle.paidPreviousBalance ? 0 : 40;  // TODO: ibawas na lang yung previous na binayaran
 
@@ -110,9 +110,9 @@ class Vehicle {
   parkingSlot!: string;
   size: number = 0;
   totalCharge: number = 0;
-  timeIn: number = 0;
-  timeOut: number = 0;
-  previousTimeIn: number = 0;
+  timeIn!: Date;
+  timeOut!: Date;
+  previousTimeIn!: Date;
   paidPreviousBalance: boolean = false;
 
   constructor(size: number) {
@@ -125,9 +125,9 @@ class Vehicle {
     this.parkingSlot = parkingSlotId;
   }
 
-  setTimeIn(time: number) {
+  setTimeIn(time: Date) {
     this.timeIn = time;
-    if (this.timeOut && (this.timeIn - this.timeOut) / 1000 < 3600) {
+    if (this.timeOut && (this.timeIn.getTime() - this.timeOut.getTime()) / 1000 < 3600) {
       this.timeIn = this.previousTimeIn;  // retain previous time-in if came back within an hour
       this.paidPreviousBalance = true;
     } else {
@@ -135,8 +135,8 @@ class Vehicle {
     }
   }
 
-  setTimeOut(time: number) {
-
+  setTimeOut(time: Date) {
+    this.timeOut = time;
   }
 }
 

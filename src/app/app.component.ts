@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
     const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
     reservedSlot.setAvailability(true);
     vehicle.setTimeOut(testDate || new Date());
-    vehicle.paidPreviousBalance = false;
+    vehicle.previouslyPaid = charge;
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
   }
 
@@ -77,7 +77,7 @@ export class AppComponent implements OnInit {
     const clockOut = testDate.getTime() || new Date().getTime();
     const timeInHours = ((clockOut - vehicle.timeIn.getTime()) / 1000)/3600;
     const multiplier = [20, 60, 100];
-    let totalCharge = vehicle.paidPreviousBalance ? 0 : 40;  // TODO: ibawas na lang yung previous na binayaran
+    let totalCharge = 40;
 
     if (timeInHours >= 24) {
       totalCharge += Math.floor(timeInHours / 24) * 5000;                        // count 24-hour chunks
@@ -86,7 +86,7 @@ export class AppComponent implements OnInit {
       totalCharge += Math.ceil(timeInHours - 3) * multiplier[parkingSlotSize];
     }
 
-    return totalCharge;
+    return totalCharge - vehicle.previouslyPaid;
   }
 
   private getEntranceNumber(): number {
@@ -114,7 +114,7 @@ class Vehicle {
   timeIn!: Date;
   timeOut!: Date;
   previousTimeIn!: Date;
-  paidPreviousBalance: boolean = false;
+  previouslyPaid: number = 0;
 
   constructor(size: number) {
     if (size > 3) throw new Error('Invalid vehicle size!');
@@ -130,9 +130,9 @@ class Vehicle {
     this.timeIn = time;
     if (this.timeOut && (this.timeIn.getTime() - this.timeOut.getTime()) / 1000 < 3600) {
       this.timeIn = this.previousTimeIn;  // retain previous time-in if came back within an hour
-      this.paidPreviousBalance = true;
     } else {
       this.previousTimeIn = time;
+      this.previouslyPaid = 0;            // treat this as a new record
     }
   }
 

@@ -61,7 +61,7 @@ export class AppComponent implements OnInit {
       bestParkingSlot.setAvailability(false);
       vehicle.setParkingSlot(bestParkingSlot.id);
       vehicle.setTimeIn(dateInTest || new Date());
-      // TODO: what if more than 3 hours siyang nawala tas bumalik within an hour?? not only 40 should be discounted
+
       console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
     } else {
       throw new Error('No more slots available!');
@@ -74,8 +74,9 @@ export class AppComponent implements OnInit {
 
     const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
     reservedSlot.setAvailability(true);
-    vehicle.setTimeOut(testDate || new Date());
-    vehicle.previouslyPaid = vehicle.previouslyPaid ? charge + vehicle.previouslyPaid : charge;
+    vehicle.setClockOut(testDate || new Date());
+    vehicle.updateFutureDiscount(charge);
+
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
   }
 
@@ -127,7 +128,6 @@ class Vehicle {
     this.size = size;
   }
 
-  // TODO: move park and unpark functions here?
   setParkingSlot(parkingSlotId: string) {
     this.parkingSlot = parkingSlotId;
   }
@@ -142,8 +142,12 @@ class Vehicle {
     }
   }
 
-  setTimeOut(time: Date) {
+  setClockOut(time: Date) {
     this.timeOut = time;
+  }
+
+  updateFutureDiscount(amount: number) {
+    this.previouslyPaid = this.previouslyPaid ? amount + this.previouslyPaid : amount;
   }
 }
 

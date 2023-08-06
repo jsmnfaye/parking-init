@@ -69,15 +69,20 @@ export class AppComponent implements OnInit {
   }
 
   public unparkVehicle(vehicle: Vehicle, testDate: Date = new Date()): void {
-    const reservedSlot = this.parkingSlots.find(parkingSlot => parkingSlot.id === vehicle.parkingSlot);
-    if (!reservedSlot) throw new Error(`Parking slot ${vehicle.parkingSlot} not found!`);
-
+    const reservedSlot = this.getReservedParkingSlot(vehicle.parkingSlot);
     const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
+    
     reservedSlot.setAvailability(true);
     vehicle.setClockOut(testDate || new Date());
     vehicle.updateFutureDiscount(charge);
 
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
+  }
+
+  getReservedParkingSlot(parkingSlotId: string): ParkingSlot {
+    const slot = this.parkingSlots.find(parkingSlot => parkingSlot.id === parkingSlotId);
+    if (!slot) throw new Error(`Parking slot ${parkingSlotId} not found!`);
+    return slot;
   }
 
   private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testDate: Date = new Date()): number {

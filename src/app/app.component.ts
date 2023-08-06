@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  public readonly VEHICLE_SIZES = ['small', 'medium', 'large'];
+
   title = 'parking-system';
 
   entranceCount: number = 3;
@@ -13,6 +15,7 @@ export class AppComponent implements OnInit {
   availableParkingSlots: Array<Array<number>> = [[4, 5, 6], [1, 2, 4], [6, 7, 8], [9, 1, 4], [3, 2, 5]];
   parkingSlotSizes: Array<number> = [0, 2, 1, 1, 2]
   parkingSlots: Array<ParkingSlot> = [];
+  vehicleSize: string = '';
 
   // test cases
   smallVehicle: Vehicle = new Vehicle(0);
@@ -71,7 +74,7 @@ export class AppComponent implements OnInit {
   public unparkVehicle(vehicle: Vehicle, testDate: Date = new Date()): void {
     const reservedSlot = this.getReservedParkingSlot(vehicle.parkingSlot);
     const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
-    
+
     reservedSlot.setAvailability(true);
     vehicle.setClockOut(testDate || new Date());
     vehicle.updateFutureDiscount(charge);

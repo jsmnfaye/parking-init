@@ -54,7 +54,9 @@
         <div class="parking-slot vertical-slot">slot</div>
         <div class="parking-slot vertical-slot">slot</div>
     </div>
-    <div style="background-color: lightblue; padding: 5px; margin: 5px; width: 28.5%; display: inline-block; text-align: center;"> Entrance B
+    <div
+        style="background-color: lightblue; padding: 5px; margin: 5px; width: 28.5%; display: inline-block; text-align: center;">
+        Entrance B
     </div>
     <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
         <div class="parking-slot area-three">slot</div>
@@ -62,7 +64,15 @@
         <div class="parking-slot area-three">slot</div>
     </div>
 </div>
-<br>
+<br><br>
 <div id="newVehicleForm">
-
+    <mat-form-field>
+        <mat-label>Vehicle size</mat-label>
+        <mat-select [(ngModel)]="vehicleSize" name="vehicleSize">
+            <mat-option *ngFor="let size of VEHICLE_SIZES" [value]="size">
+                {{size}}
+            </mat-option>
+         </mat-select>
+    </mat-form-field>
+    <button mat-stroked-button color="primary">Add Vehicle</button>
 </div>

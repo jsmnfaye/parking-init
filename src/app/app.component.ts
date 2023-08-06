@@ -58,6 +58,15 @@ export class AppComponent implements OnInit {
     console.log('done');
   }
 
+  createVehicle(vehicleSize: string) {
+    if (vehicleSize) {
+      const vehicle = new Vehicle(this.VEHICLE_SIZES.findIndex(size => size === vehicleSize));
+      this.parkVehicle(vehicle);
+    } else {
+      alert('Select a vehicle size!');
+    }
+  }
+
   public parkVehicle(vehicle: Vehicle, dateInTest: Date = new Date()): void {
     const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
     if (bestParkingSlot) {

@@ -36,12 +36,18 @@ export class AppComponent implements OnInit {
       // TODO: implement buttons for this
       this.parkVehicle(this.mediumVehicle);
       this.unparkVehicle(this.mediumVehicle);
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:00'));
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:03'));
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 20:40'));
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 5, 23 22:50'));
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 5, 23 23:55'));
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 00:50'));
+
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:20'));
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:45')); 
+
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:58'));
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 18:40'));
+
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 19:30'));
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 23:50'));
+
+      this.parkVehicle(this.mediumVehicle, new Date('Aug 8, 23 19:30'));
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 8, 23 20:50'));
     } catch (error) {
       console.error(error);
     }
@@ -69,7 +75,7 @@ export class AppComponent implements OnInit {
     const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
     reservedSlot.setAvailability(true);
     vehicle.setTimeOut(testDate || new Date());
-    vehicle.previouslyPaid = charge;
+    vehicle.previouslyPaid = vehicle.previouslyPaid ? charge + vehicle.previouslyPaid : charge;
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
   }
 

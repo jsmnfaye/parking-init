@@ -75,6 +75,11 @@ export class AppComponent implements OnInit {
       vehicle.setTimeIn(dateInTest || new Date());
 
       console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
+      /**
+       * TODO: 
+       * 1. Show vehicle ID on HTML parking slot div
+       * 2. Change color of parking slot div (green?)
+       */
     } else {
       throw new Error('No more slots available!');
     }

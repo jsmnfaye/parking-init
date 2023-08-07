@@ -91,6 +91,19 @@ export class AppComponent implements OnInit {
     console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
   }
 
+  public unparkTest(event: Event) {
+    const parkingSlotId = ((event.target as HTMLDivElement).id).replace(/[A-Za-z]/g, '');
+    const parkingSlot = this.parkingSlots.find(slot => slot.id === parkingSlotId);
+    if (parkingSlot) {
+      console.log(`You clicked on parking slot ${parkingSlot.id}`);
+      /**
+       * TODO:
+       * 1. Unpark the vehicle that sits in that slot (might have to modify unparkVehicle())
+       * 2. Change the color of the div to the original (right now it's lightyellow)
+       */
+    }
+  }
+
   getReservedParkingSlot(parkingSlotId: string): ParkingSlot {
     const slot = this.parkingSlots.find(parkingSlot => parkingSlot.id === parkingSlotId);
     if (!slot) throw new Error(`Parking slot ${parkingSlotId} not found!`);

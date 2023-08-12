@@ -109,7 +109,6 @@ export class AppComponent implements OnInit {
       /**
        * TODO:
        * 1. Unpark the vehicle that sits in that slot (might have to modify unparkVehicle())
-       * 2. Change the color of the div to the original (right now it's lightyellow)
        */
     }
   }

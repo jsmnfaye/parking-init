@@ -38,26 +38,26 @@ export class AppComponent implements OnInit {
       );
     }
 
-    try {
-      // Test with dummy timestamps
-      // TODO: implement buttons for this
-      this.parkVehicle(this.mediumVehicle);
-      this.unparkVehicle(this.mediumVehicle);
+    // try {
+    //   // Test with dummy timestamps
+    //   // TODO: implement buttons for this
+    //   this.parkVehicle(this.mediumVehicle);
+    //   this.unparkVehicle(this.mediumVehicle);
 
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:20'));
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:45'));
+    //   this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:20'));
+    //   this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:45'));
 
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:58'));
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 18:40'));
+    //   this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:58'));
+    //   this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 18:40'));
 
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 19:30'));
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 23:50'));
+    //   this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 19:30'));
+    //   this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 23:50'));
 
-      this.parkVehicle(this.mediumVehicle, new Date('Aug 8, 23 19:30'));
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 8, 23 20:50'));
-    } catch (error) {
-      console.error(error);
-    }
+    //   this.parkVehicle(this.mediumVehicle, new Date('Aug 8, 23 19:30'));
+    //   this.unparkVehicle(this.mediumVehicle, new Date('Aug 8, 23 20:50'));
+    // } catch (error) {
+    //   console.error(error);
+    // }
 
     console.log('done');
   }
@@ -77,13 +77,7 @@ export class AppComponent implements OnInit {
       bestParkingSlot.setAvailability(false);
       vehicle.setParkingSlot(bestParkingSlot.id);
       vehicle.setTimeIn(dateInTest || new Date());
-
-      console.log(`Reserved parking slot ${bestParkingSlot.id} for Vehicle ${vehicle.size}`);
-      /**
-       * TODO: 
-       * 1. Show vehicle ID on HTML parking slot div
-       * 2. Change color of parking slot div (green?)
-       */
+      this.updateHtmlSlot(bestParkingSlot.id, vehicle.id);
     } else {
       throw new Error('No more slots available!');
     }
@@ -104,8 +98,7 @@ export class AppComponent implements OnInit {
     const slotHtmlId = (event.target as HTMLDivElement).id;
     const parkingSlot = this.parkingSlots.find(slot => slot.id === slotHtmlId.replace(/[A-Za-z]/g, ''));
     if (parkingSlot && document.getElementById(slotHtmlId)) {
-      console.log(`You clicked on parking slot ${parkingSlot.id}`);
-      document.getElementById(slotHtmlId)!.style.backgroundColor = 'green';
+      this.resetHtmlSlot(slotHtmlId);
       /**
        * TODO:
        * 1. Unpark the vehicle that sits in that slot (might have to modify unparkVehicle())
@@ -151,5 +144,15 @@ export class AppComponent implements OnInit {
     );
     const closestSlot = freeSlots.map(parkingSlot => parkingSlot.distances[entranceNumber]).sort()[0];
     return freeSlots.find(parkingSlot => parkingSlot.distances[entranceNumber] === closestSlot);
+  }
+
+  private resetHtmlSlot(elementId: string) {
+    document.getElementById(elementId)!.style.backgroundColor = 'lightyellow';
+    document.getElementById(elementId)!.textContent = 'slot';
+  }
+
+  private updateHtmlSlot(parkingSlotId: string, vehicleId: string) {
+    document.getElementById(`slot${parkingSlotId}`)!.style.backgroundColor = 'pink';
+    document.getElementById(`slot${parkingSlotId}`)!.textContent = vehicleId;
   }
 }

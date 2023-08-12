@@ -1,4 +1,5 @@
 export class Vehicle {
+    id: string;
     parkingSlot!: string;
     size: number = 0;
     totalCharge: number = 0;
@@ -10,6 +11,7 @@ export class Vehicle {
     constructor(size: number) {
         if (size > 3) throw new Error('Invalid vehicle size!');
         this.size = size;
+        this.id = `V${size}-${Math.floor(Math.random() * 100)}`;
     }
 
     setParkingSlot(parkingSlotId: string) {

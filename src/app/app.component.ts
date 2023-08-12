@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
       this.unparkVehicle(this.mediumVehicle);
 
       this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:20'));
-      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:45')); 
+      this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:45'));
 
       this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:58'));
       this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 18:40'));
@@ -101,10 +101,11 @@ export class AppComponent implements OnInit {
   }
 
   public unparkTest(event: Event) {
-    const parkingSlotId = ((event.target as HTMLDivElement).id).replace(/[A-Za-z]/g, '');
-    const parkingSlot = this.parkingSlots.find(slot => slot.id === parkingSlotId);
-    if (parkingSlot) {
+    const slotHtmlId = (event.target as HTMLDivElement).id;
+    const parkingSlot = this.parkingSlots.find(slot => slot.id === slotHtmlId.replace(/[A-Za-z]/g, ''));
+    if (parkingSlot && document.getElementById(slotHtmlId)) {
       console.log(`You clicked on parking slot ${parkingSlot.id}`);
+      document.getElementById(slotHtmlId)!.style.backgroundColor = 'green';
       /**
        * TODO:
        * 1. Unpark the vehicle that sits in that slot (might have to modify unparkVehicle())
@@ -121,7 +122,7 @@ export class AppComponent implements OnInit {
 
   private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testDate: Date = new Date()): number {
     const clockOut = testDate.getTime() || new Date().getTime();
-    const timeInHours = ((clockOut - vehicle.timeIn.getTime()) / 1000)/3600;
+    const timeInHours = ((clockOut - vehicle.timeIn.getTime()) / 1000) / 3600;
     const multiplier = [20, 60, 100];
     let totalCharge = 40;
 

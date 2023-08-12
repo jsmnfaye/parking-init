@@ -126,6 +126,7 @@ export class AppComponent implements OnInit {
     let totalCharge = 40;
 
     if (timeInHours >= 24) {
+      totalCharge = 0;
       totalCharge += Math.floor(timeInHours / 24) * 5000;                        // count 24-hour chunks
       totalCharge += Math.ceil(timeInHours % 24) * multiplier[parkingSlotSize];  // count additional hours
     } else if (timeInHours > 3) {

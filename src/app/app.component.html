@@ -1,78 +1,78 @@
-<p>{{title}}</p>
-
-<div id="parkingLotMap" style="background-color: lightgray; padding: 5px; width: 650px;">
-    <!-- 1st row -->
-    <div style="background-color: coral; padding: 5px; margin: 5px; width: 70%; display: inline-block">
-        <div id="slot1" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
-        <div id="slot2" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
-        <div id="slot3" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
-        <div id="slot4" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
-        <div id="slot5" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
-        <div id="slot6" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
-    </div>
-    <div style="background-color: lightblue;margin: 5px; width: 12%; display: inline-block">
-        Entrance C
-    </div>
-    <div style="background-color: coral; padding: 5px; margin: 5px; width: 10%; display: inline-block">
-        <div class="parking-slot" style="width:50%">slot</div>
-    </div>
-    <!-- 2nd row -->
-    <div style="padding: 5px; margin: 5px; width: 83.5%; display: inline-block">
-        <div style="background-color: lightblue;margin: 5px; display: inline-block">
-            Entrance A
+<div style="padding: 10px;">
+    <h2>{{title}}</h2>
+    <div id="parkingLotMap" style="background-color: lightgray; padding: 5px; width: 650px; display: inline-block;">
+        <!-- 1st row -->
+        <div style="background-color: coral; padding: 5px; margin: 5px; width: 70%; display: inline-block">
+            <div id="slot1" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
+            <div id="slot2" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
+            <div id="slot3" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
+            <div id="slot4" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
+            <div id="slot5" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
+            <div id="slot6" (click)="unparkTest($event)" class="parking-slot horizontal-slot">slot</div>
+        </div>
+        <div style="background-color: lightblue;margin: 5px; width: 12%; display: inline-block">
+            Entrance C
+        </div>
+        <div style="background-color: coral; padding: 5px; margin: 5px; width: 10%; display: inline-block">
+            <div class="parking-slot" style="width:50%">slot</div>
+        </div>
+        <!-- 2nd row -->
+        <div style="padding: 5px; margin: 5px; width: 83.5%; display: inline-block">
+            <div style="background-color: lightblue;margin: 5px; display: inline-block">
+                Entrance A
+            </div>
+        </div>
+        <div style="background-color: coral; padding: 5px; margin: 5px; width: 10%; display: inline-block">
+            <div class="parking-slot" style="width:50%">slot</div>
+        </div>
+        <!-- 3rd row -->
+        <div style="background-color: coral; padding: 5px; margin: 5px; width: 23.5%; display: inline-block">
+            <div class="parking-slot vertical-slot">slot</div>
+            <div class="parking-slot vertical-slot">slot</div>
+        </div>
+        <div style="padding: 5px; margin: 5px; width: 28.5%; display: inline-block">
+        </div>
+        <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
+            <div class="parking-slot area-three">slot</div>
+            <div class="parking-slot area-three">slot</div>
+            <div class="parking-slot area-three">slot</div>
+        </div>
+        <!-- 4th row -->
+        <div style="background-color: coral; padding: 5px; margin: 5px; width: 23.5%; display: inline-block">
+            <div class="parking-slot vertical-slot">slot</div>
+            <div class="parking-slot vertical-slot">slot</div>
+        </div>
+        <div style="padding: 5px; margin: 5px; width: 28.5%; display: inline-block">
+        </div>
+        <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
+            <div class="parking-slot area-three">slot</div>
+            <div class="parking-slot area-three">slot</div>
+            <div class="parking-slot area-three">slot</div>
+        </div>
+        <!-- 5th row -->
+        <div style="background-color: coral; padding: 5px; margin: 5px; width: 23.5%; display: inline-block">
+            <div class="parking-slot vertical-slot">slot</div>
+            <div class="parking-slot vertical-slot">slot</div>
+        </div>
+        <div
+            style="background-color: lightblue; padding: 5px; margin: 5px; width: 28.5%; display: inline-block; text-align: center;">
+            Entrance B
+        </div>
+        <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
+            <div class="parking-slot area-three">slot</div>
+            <div class="parking-slot area-three">slot</div>
+            <div class="parking-slot area-three">slot</div>
         </div>
     </div>
-    <div style="background-color: coral; padding: 5px; margin: 5px; width: 10%; display: inline-block">
-        <div class="parking-slot" style="width:50%">slot</div>
+    <div id="newVehicleForm" style="display: inline-block; padding: 10px;">
+        <mat-form-field>
+            <mat-label>Vehicle size</mat-label>
+            <mat-select [(ngModel)]="vehicleSize" name="vehicleSize">
+                <mat-option *ngFor="let size of VEHICLE_SIZES" [value]="size">
+                    {{size}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field><br>
+        <button mat-stroked-button color="primary" (click)="createVehicle(vehicleSize)">Add Vehicle</button>
     </div>
-    <!-- 3rd row -->
-    <div style="background-color: coral; padding: 5px; margin: 5px; width: 23.5%; display: inline-block">
-        <div class="parking-slot vertical-slot">slot</div>
-        <div class="parking-slot vertical-slot">slot</div>
-    </div>
-    <div style="padding: 5px; margin: 5px; width: 28.5%; display: inline-block">
-    </div>
-    <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
-        <div class="parking-slot area-three">slot</div>
-        <div class="parking-slot area-three">slot</div>
-        <div class="parking-slot area-three">slot</div>
-    </div>
-    <!-- 4th row -->
-    <div style="background-color: coral; padding: 5px; margin: 5px; width: 23.5%; display: inline-block">
-        <div class="parking-slot vertical-slot">slot</div>
-        <div class="parking-slot vertical-slot">slot</div>
-    </div>
-    <div style="padding: 5px; margin: 5px; width: 28.5%; display: inline-block">
-    </div>
-    <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
-        <div class="parking-slot area-three">slot</div>
-        <div class="parking-slot area-three">slot</div>
-        <div class="parking-slot area-three">slot</div>
-    </div>
-    <!-- 5th row -->
-    <div style="background-color: coral; padding: 5px; margin: 5px; width: 23.5%; display: inline-block">
-        <div class="parking-slot vertical-slot">slot</div>
-        <div class="parking-slot vertical-slot">slot</div>
-    </div>
-    <div
-        style="background-color: lightblue; padding: 5px; margin: 5px; width: 28.5%; display: inline-block; text-align: center;">
-        Entrance B
-    </div>
-    <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
-        <div class="parking-slot area-three">slot</div>
-        <div class="parking-slot area-three">slot</div>
-        <div class="parking-slot area-three">slot</div>
-    </div>
-</div>
-<br><br>
-<div id="newVehicleForm">
-    <mat-form-field>
-        <mat-label>Vehicle size</mat-label>
-        <mat-select [(ngModel)]="vehicleSize" name="vehicleSize">
-            <mat-option *ngFor="let size of VEHICLE_SIZES" [value]="size">
-                {{size}}
-            </mat-option>
-         </mat-select>
-    </mat-form-field>
-    <button mat-stroked-button color="primary" (click)="createVehicle(vehicleSize)">Add Vehicle</button>
 </div>

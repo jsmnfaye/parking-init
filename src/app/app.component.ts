@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Vehicle } from './classes/vehicle.component';
+import { ParkingSlot } from './classes/parking-slot.component';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,6 +15,7 @@ export class AppComponent implements OnInit {
 
   entranceCount: number = 3;
   entranceQueues = [0, 0, 0];
+  // TODO: move this to a separate file (txt or json will do)
   availableParkingSlots: Array<Array<number>> = [[4, 5, 6], [1, 2, 4], [6, 7, 8], [9, 1, 4], [3, 2, 5]];
   parkingSlotSizes: Array<number> = [0, 2, 1, 1, 2]
   parkingSlots: Array<ParkingSlot> = [];
@@ -146,62 +150,5 @@ export class AppComponent implements OnInit {
     );
     const closestSlot = freeSlots.map(parkingSlot => parkingSlot.distances[entranceNumber]).sort()[0];
     return freeSlots.find(parkingSlot => parkingSlot.distances[entranceNumber] === closestSlot);
-  }
-}
-
-class Vehicle {
-  parkingSlot!: string;
-  size: number = 0;
-  totalCharge: number = 0;
-  timeIn!: Date;
-  timeOut!: Date;
-  previousTimeIn!: Date;
-  previouslyPaid: number = 0;
-
-  constructor(size: number) {
-    if (size > 3) throw new Error('Invalid vehicle size!');
-    this.size = size;
-  }
-
-  setParkingSlot(parkingSlotId: string) {
-    this.parkingSlot = parkingSlotId;
-  }
-
-  setTimeIn(time: Date) {
-    this.timeIn = time;
-    if (this.timeOut && (this.timeIn.getTime() - this.timeOut.getTime()) / 1000 < 3600) {
-      this.timeIn = this.previousTimeIn;  // retain previous time-in if came back within an hour
-    } else {
-      this.previousTimeIn = time;
-      this.previouslyPaid = 0;            // treat this as a new record
-    }
-  }
-
-  setClockOut(time: Date) {
-    this.timeOut = time;
-  }
-
-  updateFutureDiscount(amount: number) {
-    this.previouslyPaid = this.previouslyPaid ? amount + this.previouslyPaid : amount;
-  }
-}
-
-class ParkingSlot {
-  id: string;
-  size: number = 0;
-  distances: Array<number> = [];
-  isAvailable: boolean = true;
-
-  constructor(id: string, size: number, distances: Array<number>) {
-    if (size > 3) throw new Error('Invalid parking slot size!');
-    if (distances.length !== 3) throw new Error('Number of distances should be equal to number of entrances!');
-    // TODO: entrance count should be dynamic
-    this.id = id;
-    this.size = size;
-    this.distances = distances;
-  }
-
-  setAvailability(available: boolean) {
-    this.isAvailable = available;
   }
 }

@@ -17,7 +17,6 @@ export class AppComponent implements OnInit {
 
   entranceCount: number = 3;
   entranceQueues = [0, 0, 0];
-  // TODO: move this to a separate file (txt or json will do)
   finalCharge: number = 0;
   parkingSlots: Array<ParkingSlot> = [];
   vehicleSize: string = '';
@@ -25,11 +24,6 @@ export class AppComponent implements OnInit {
   minClockOutDate = new Date();
   clockOutDate!: Date;
   clockOutTime: any = null;
-
-  // test cases
-  smallVehicle: Vehicle = new Vehicle(0);
-  mediumVehicle: Vehicle = new Vehicle(1);
-  largeVehicle: Vehicle = new Vehicle(2);
 
   ngOnInit() {
     // prepare data
@@ -73,7 +67,6 @@ export class AppComponent implements OnInit {
         reservedSlot.removeVehicle();
         this.finalCharge = charge;
         this.showReceipt();
-        console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
       }
     } catch (error: any) {
       alert(error.message);

@@ -24,6 +24,8 @@ export class AppComponent implements OnInit {
   vehicleSize: string = '';
 
   minClockOutDate = new Date();
+  clockOutDate!: Date;
+  clockOutTime: any = null;
 
   // test cases
   smallVehicle: Vehicle = new Vehicle(0);
@@ -38,32 +40,9 @@ export class AppComponent implements OnInit {
     // setup dummy parking slots; should be randomized in the future
     for (const idx in this.parkingSlotSizes) {
       this.parkingSlots.push(
-        new ParkingSlot((parseInt(idx)+1).toString(), this.parkingSlotSizes[idx], this.availableParkingSlots[idx])
+        new ParkingSlot((parseInt(idx) + 1).toString(), this.parkingSlotSizes[idx], this.availableParkingSlots[idx])
       );
     }
-
-    // try {
-    //   // Test with dummy timestamps
-    //   // TODO: implement buttons for this
-    //   this.parkVehicle(this.mediumVehicle);
-    //   this.unparkVehicle(this.mediumVehicle);
-
-    //   this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:20'));
-    //   this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:45'));
-
-    //   this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 16:58'));
-    //   this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 18:40'));
-
-    //   this.parkVehicle(this.mediumVehicle, new Date('Aug 6, 23 19:30'));
-    //   this.unparkVehicle(this.mediumVehicle, new Date('Aug 6, 23 23:50'));
-
-    //   this.parkVehicle(this.mediumVehicle, new Date('Aug 8, 23 19:30'));
-    //   this.unparkVehicle(this.mediumVehicle, new Date('Aug 8, 23 20:50'));
-    // } catch (error) {
-    //   console.error(error);
-    // }
-
-    console.log('done');
   }
 
   public parkVehicle(vehicleSize: string, dateInTest: Date = new Date()): void {
@@ -91,10 +70,11 @@ export class AppComponent implements OnInit {
     if (reservedSlot && document.getElementById(slotHtmlId)) {
       this.resetHtmlSlot(slotHtmlId);
       const vehicle = reservedSlot.vehicle as Vehicle;
-      const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
+      const clockout = this.setClockOutDate(testDate);
+      const charge = this.getTotalCharge(vehicle, reservedSlot.size, clockout);
 
+      vehicle.setClockOut(clockout, charge);
       reservedSlot.removeVehicle();
-      vehicle.setClockOut(testDate || new Date(), charge);
       this.finalCharge = charge;
       this.showReceipt();
       console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
@@ -153,6 +133,15 @@ export class AppComponent implements OnInit {
   private resetHtmlSlot(elementId: string) {
     document.getElementById(elementId)!.style.backgroundColor = 'lightyellow';
     document.getElementById(elementId)!.textContent = 'slot';
+  }
+
+  private setClockOutDate(date: Date) {
+    const clockout = this.clockOutDate || date;
+    if (this.clockOutTime) {
+      this.clockOutDate.setHours(this.clockOutTime.split(':')[0]);
+      this.clockOutDate.setMinutes(this.clockOutTime.split(':')[1]);
+    }
+    return clockout;
   }
 
   private updateHtmlSlot(parkingSlotId: string, vehicleId: string) {

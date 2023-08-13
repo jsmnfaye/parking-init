@@ -62,24 +62,21 @@ export class AppComponent implements OnInit {
     console.log('done');
   }
 
-  createVehicle(vehicleSize: string) {
+  public parkVehicle(vehicleSize: string, dateInTest: Date = new Date()): void {
     if (vehicleSize) {
       const vehicle = new Vehicle(this.VEHICLE_SIZES.findIndex(size => size === vehicleSize));
-      this.parkVehicle(vehicle);
+      const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
+      if (bestParkingSlot) {
+        bestParkingSlot.assignVehicle(vehicle);
+        vehicle.setParkingSlot(bestParkingSlot.id);
+        vehicle.setTimeIn(dateInTest || new Date());
+        this.updateHtmlSlot(bestParkingSlot.id, vehicle.id);
+      } else {
+        throw new Error('No more slots available!');
+        // TODO: must continue looking for other slots as long as there are available ones
+      }
     } else {
       alert('Select a vehicle size!');
-    }
-  }
-
-  public parkVehicle(vehicle: Vehicle, dateInTest: Date = new Date()): void {
-    const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
-    if (bestParkingSlot) {
-      bestParkingSlot.setAvailability(false);
-      vehicle.setParkingSlot(bestParkingSlot.id);
-      vehicle.setTimeIn(dateInTest || new Date());
-      this.updateHtmlSlot(bestParkingSlot.id, vehicle.id);
-    } else {
-      throw new Error('No more slots available!');
     }
   }
 
@@ -87,7 +84,7 @@ export class AppComponent implements OnInit {
     const reservedSlot = this.getReservedParkingSlot(vehicle.parkingSlot);
     const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
 
-    reservedSlot.setAvailability(true);
+    reservedSlot.removeVehicle();
     vehicle.setClockOut(testDate || new Date());
     vehicle.updateFutureDiscount(charge);
 
@@ -99,10 +96,7 @@ export class AppComponent implements OnInit {
     const parkingSlot = this.parkingSlots.find(slot => slot.id === slotHtmlId.replace(/[A-Za-z]/g, ''));
     if (parkingSlot && document.getElementById(slotHtmlId)) {
       this.resetHtmlSlot(slotHtmlId);
-      /**
-       * TODO:
-       * 1. Unpark the vehicle that sits in that slot (might have to modify unparkVehicle())
-       */
+      // this.unparkVehicle();
     }
   }
 

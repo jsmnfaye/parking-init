@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
     // setup dummy parking slots; should be randomized in the future
     for (const idx in this.parkingSlotSizes) {
       this.parkingSlots.push(
-        new ParkingSlot(idx, this.parkingSlotSizes[idx], this.availableParkingSlots[idx])
+        new ParkingSlot((parseInt(idx)+1).toString(), this.parkingSlotSizes[idx], this.availableParkingSlots[idx])
       );
     }
 
@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
         vehicle.setTimeIn(dateInTest || new Date());
         this.updateHtmlSlot(bestParkingSlot.id, vehicle.id);
       } else {
-        throw new Error('No more slots available!');
+        alert('No more slots available!');
         // TODO: must continue looking for other slots as long as there are available ones
       }
     } else {
@@ -80,30 +80,26 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public unparkVehicle(vehicle: Vehicle, testDate: Date = new Date()): void {
-    const reservedSlot = this.getReservedParkingSlot(vehicle.parkingSlot);
-    const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
-
-    reservedSlot.removeVehicle();
-    vehicle.setClockOut(testDate || new Date());
-    vehicle.updateFutureDiscount(charge);
-
-    console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
-  }
-
-  public unparkTest(event: Event) {
-    const slotHtmlId = (event.target as HTMLDivElement).id;
-    const parkingSlot = this.parkingSlots.find(slot => slot.id === slotHtmlId.replace(/[A-Za-z]/g, ''));
-    if (parkingSlot && document.getElementById(slotHtmlId)) {
+  public unparkTest(event: Event, testDate: Date = new Date()) {
+    const reservedSlot = this.getReservedParkingSlot(event);
+    const slotHtmlId = `slot${reservedSlot.id}`;
+    if (reservedSlot && document.getElementById(slotHtmlId)) {
       this.resetHtmlSlot(slotHtmlId);
-      // this.unparkVehicle();
+      const vehicle = reservedSlot.vehicle as Vehicle;
+      const charge = this.getTotalCharge(vehicle, reservedSlot.size, testDate);
+
+      reservedSlot.removeVehicle();
+      vehicle.setClockOut(testDate || new Date(), charge);
+
+      console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
     }
   }
 
-  getReservedParkingSlot(parkingSlotId: string): ParkingSlot {
-    const slot = this.parkingSlots.find(parkingSlot => parkingSlot.id === parkingSlotId);
-    if (!slot) throw new Error(`Parking slot ${parkingSlotId} not found!`);
-    return slot;
+  getReservedParkingSlot(event: Event): ParkingSlot {
+    const vehicleId = (event.target as HTMLDivElement).textContent;
+    const reservedSlot = this.parkingSlots.find(slot => slot.vehicle?.id === vehicleId);
+    if (!reservedSlot) throw new Error(`Could not find reserved parking slot for vehicle #${vehicleId}!`);
+    return reservedSlot;
   }
 
   private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testDate: Date = new Date()): number {

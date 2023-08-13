@@ -28,8 +28,9 @@ export class Vehicle {
         }
     }
 
-    setClockOut(time: Date) {
+    setClockOut(time: Date, amount: number) {
         this.timeOut = time;
+        this.updateFutureDiscount(amount);
     }
 
     updateFutureDiscount(amount: number) {

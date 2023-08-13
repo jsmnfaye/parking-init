@@ -18,13 +18,11 @@ export class ParkingSlot {
 
     assignVehicle(vehicle: Vehicle) {
         this.vehicle = vehicle;
+        this.isAvailable = false;
     }
 
     removeVehicle() {
         this.vehicle = null;
-    }
-
-    setAvailability(available: boolean) {
-        this.isAvailable = available;
+        this.isAvailable = true;
     }
 }

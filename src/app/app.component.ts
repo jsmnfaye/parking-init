@@ -65,19 +65,23 @@ export class AppComponent implements OnInit {
   }
 
   public unparkVehicle(event: Event, testDate: Date = new Date()) {
-    const reservedSlot = this.getReservedParkingSlot(event);
-    const slotHtmlId = `slot${reservedSlot.id}`;
-    if (reservedSlot && document.getElementById(slotHtmlId)) {
-      this.resetHtmlSlot(slotHtmlId);
-      const vehicle = reservedSlot.vehicle as Vehicle;
-      const clockout = this.setClockOutDate(testDate);
-      const charge = this.getTotalCharge(vehicle, reservedSlot.size, clockout);
+    try {
+      const reservedSlot = this.getReservedParkingSlot(event);
+      const slotHtmlId = `slot${reservedSlot.id}`;
+      if (reservedSlot && document.getElementById(slotHtmlId)) {
+        const vehicle = reservedSlot.vehicle as Vehicle;
+        const clockout = this.setClockOutDate(testDate);
+        const charge = this.getTotalCharge(vehicle, reservedSlot.size, clockout);
 
-      vehicle.setClockOut(clockout, charge);
-      reservedSlot.removeVehicle();
-      this.finalCharge = charge;
-      this.showReceipt();
-      console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
+        this.resetHtmlSlot(slotHtmlId);
+        vehicle.setClockOut(clockout, charge);
+        reservedSlot.removeVehicle();
+        this.finalCharge = charge;
+        this.showReceipt();
+        console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
+      }
+    } catch (error: any) {
+      alert(error.message);
     }
   }
 
@@ -138,8 +142,9 @@ export class AppComponent implements OnInit {
   private setClockOutDate(date: Date) {
     const clockout = this.clockOutDate || date;
     if (this.clockOutTime) {
-      this.clockOutDate.setHours(this.clockOutTime.split(':')[0]);
-      this.clockOutDate.setMinutes(this.clockOutTime.split(':')[1]);
+      clockout.setHours(this.clockOutTime.split(':')[0]);
+      clockout.setMinutes(this.clockOutTime.split(':')[1]);
+      if (clockout.getTime() < Date.now()) throw new Error('Invalid timestamp!');
     }
     return clockout;
   }

@@ -22,45 +22,42 @@
             <div id="slot8" (click)="unparkVehicle($event)" class="parking-slot" style="width:50%">slot</div>
         </div>
         <!-- 3rd row -->
-        <div style="background-color: coral; padding: 5px; margin: 5px; width: 23.5%; display: inline-block">
+        <div class="parking-slot-padding lower-left-slot">
             <div id="slot9" (click)="unparkVehicle($event)" class="parking-slot vertical-slot">slot</div>
             <div id="slot10" (click)="unparkVehicle($event)" class="parking-slot vertical-slot">slot</div>
         </div>
-        <div style="padding: 5px; margin: 5px; width: 28.5%; display: inline-block">
+        <div class="entranceB-pathway">
         </div>
-        <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
+        <div class="parking-slot-padding lower-right-slot">
             <div id="slot11" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
             <div id="slot12" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
             <div id="slot13" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
         </div>
         <!-- 4th row -->
-        <div style="background-color: coral; padding: 5px; margin: 5px; width: 23.5%; display: inline-block">
+        <div class="parking-slot-padding lower-left-slot">
             <div id="slot14" (click)="unparkVehicle($event)" class="parking-slot vertical-slot">slot</div>
             <div id="slot15" (click)="unparkVehicle($event)" class="parking-slot vertical-slot">slot</div>
         </div>
-        <div style="padding: 5px; margin: 5px; width: 28.5%; display: inline-block">
+        <div class="entranceB-pathway">
         </div>
-        <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
+        <div class="parking-slot-padding lower-right-slot">
             <div id="slot16" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
             <div id="slot17" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
             <div id="slot18" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
         </div>
         <!-- 5th row -->
-        <div style="background-color: coral; padding: 5px; margin: 5px; width: 23.5%; display: inline-block">
+        <div class="parking-slot-padding lower-left-slot">
             <div id="slot19" (click)="unparkVehicle($event)" class="parking-slot vertical-slot">slot</div>
             <div id="slot20" (click)="unparkVehicle($event)" class="parking-slot vertical-slot">slot</div>
         </div>
-        <div
-            style="background-color: lightblue; padding: 5px; margin: 5px; width: 28.5%; display: inline-block; text-align: center;">
-            Entrance B
-        </div>
-        <div style="background-color: coral; padding: 5px; margin: 5px; width: 38.5%; display: inline-block">
+        <div id="entranceB" class="entranceB-pathway">Entrance B</div>
+        <div class="parking-slot-padding lower-right-slot">
             <div id="slot21" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
             <div id="slot22" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
             <div id="slot23" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
         </div>
     </div>
-    <div id="newVehicleForm" style="display: inline-block; padding: 10px;">
+    <div id="parkingForm">
         <mat-form-field>
             <mat-label>Choose CLOCK OUT date</mat-label>
             <input matInput [matDatepicker]="picker" [min]="minClockOutDate" disabled [(ngModel)]="clockOutDate" name="datePicker">

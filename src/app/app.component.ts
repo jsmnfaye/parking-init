@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { Vehicle } from './classes/vehicle.component';
 import { ParkingSlot } from './classes/parking-slot.component';
+import { PARKING_SLOTS } from './resources/parking-slots.component';
 
 @Component({
   selector: 'app-root',
@@ -17,9 +18,7 @@ export class AppComponent implements OnInit {
   entranceCount: number = 3;
   entranceQueues = [0, 0, 0];
   // TODO: move this to a separate file (txt or json will do)
-  availableParkingSlots: Array<Array<number>> = [[4, 5, 6], [1, 2, 4], [6, 7, 8], [9, 1, 4], [3, 2, 5]];
   finalCharge: number = 0;
-  parkingSlotSizes: Array<number> = [0, 2, 1, 1, 2]
   parkingSlots: Array<ParkingSlot> = [];
   vehicleSize: string = '';
 
@@ -34,13 +33,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     // prepare data
-    if (this.availableParkingSlots.length !== this.parkingSlotSizes.length) {
-      throw new Error('Different numbers of parking slot distances and sizes; should be equal!');
-    }
-    // setup dummy parking slots; should be randomized in the future
-    for (const idx in this.parkingSlotSizes) {
+    for (const idx in PARKING_SLOTS) {
       this.parkingSlots.push(
-        new ParkingSlot((parseInt(idx) + 1).toString(), this.parkingSlotSizes[idx], this.availableParkingSlots[idx])
+        new ParkingSlot((parseInt(idx) + 1).toString(), PARKING_SLOTS[idx].size, PARKING_SLOTS[idx].distances)
       );
     }
   }

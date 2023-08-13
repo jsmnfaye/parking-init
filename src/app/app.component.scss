@@ -1,9 +1,38 @@
+#parkingLotMap {
+    background-color: lightgray;
+    padding: 5px;
+    width: 650px;
+    display: inline-block;
+}
+
+#firstRow {
+    width: 70%;
+}
+
+#secondRow {
+    padding: 5px;
+    margin: 5px;
+    width: 83.5%;
+    display: inline-block
+}
+
+#entranceC {
+    width: 12%;
+}
+
 .parking-slot {
     background-color: lightyellow;
     padding: 10px;
     height: 10%;
     margin: 5px;
     display: inline-block
+}
+
+.parking-slot-padding {
+    background-color: coral;
+    padding: 5px;
+    margin: 5px;
+    display: inline-block;
 }
 
 .horizontal-slot {
@@ -14,7 +43,17 @@
     width: 29.5%;
 }
 
+.entrance {
+    background-color: lightblue;
+    margin: 5px;
+    display: inline-block
+}
+
 .area-three {
     width: 20%;
     margin: 5px 6px;
+}
+
+.upper-right-slot {
+    width: 10%;
 }

@@ -66,6 +66,14 @@
     </div>
     <div id="newVehicleForm" style="display: inline-block; padding: 10px;">
         <mat-form-field>
+            <mat-label>Choose CLOCK OUT date</mat-label>
+            <input matInput [matDatepicker]="picker" [min]="minClockOutDate" disabled>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker disabled="false"></mat-datepicker>
+        </mat-form-field>
+        <br><br>
+        <mat-form-field>
             <mat-label>Vehicle size</mat-label>
             <mat-select [(ngModel)]="vehicleSize" name="vehicleSize">
                 <mat-option *ngFor="let size of VEHICLE_SIZES" [value]="size">

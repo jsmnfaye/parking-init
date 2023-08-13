@@ -23,6 +23,8 @@ export class AppComponent implements OnInit {
   parkingSlots: Array<ParkingSlot> = [];
   vehicleSize: string = '';
 
+  minClockOutDate = new Date();
+
   // test cases
   smallVehicle: Vehicle = new Vehicle(0);
   mediumVehicle: Vehicle = new Vehicle(1);

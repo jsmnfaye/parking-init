@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { Vehicle } from './classes/vehicle.component';
 import { ParkingSlot } from './classes/parking-slot.component';
@@ -9,6 +9,7 @@ import { ParkingSlot } from './classes/parking-slot.component';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  @ViewChild('receiptText') receiptDiv: ElementRef | undefined;
   public readonly VEHICLE_SIZES = ['small', 'medium', 'large'];
 
   title = 'parking-system';
@@ -17,6 +18,7 @@ export class AppComponent implements OnInit {
   entranceQueues = [0, 0, 0];
   // TODO: move this to a separate file (txt or json will do)
   availableParkingSlots: Array<Array<number>> = [[4, 5, 6], [1, 2, 4], [6, 7, 8], [9, 1, 4], [3, 2, 5]];
+  finalCharge: number = 0;
   parkingSlotSizes: Array<number> = [0, 2, 1, 1, 2]
   parkingSlots: Array<ParkingSlot> = [];
   vehicleSize: string = '';
@@ -63,6 +65,7 @@ export class AppComponent implements OnInit {
   }
 
   public parkVehicle(vehicleSize: string, dateInTest: Date = new Date()): void {
+    this.hideReceipt();
     if (vehicleSize) {
       const vehicle = new Vehicle(this.VEHICLE_SIZES.findIndex(size => size === vehicleSize));
       const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
@@ -80,7 +83,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public unparkTest(event: Event, testDate: Date = new Date()) {
+  public unparkVehicle(event: Event, testDate: Date = new Date()) {
     const reservedSlot = this.getReservedParkingSlot(event);
     const slotHtmlId = `slot${reservedSlot.id}`;
     if (reservedSlot && document.getElementById(slotHtmlId)) {
@@ -90,7 +93,8 @@ export class AppComponent implements OnInit {
 
       reservedSlot.removeVehicle();
       vehicle.setClockOut(testDate || new Date(), charge);
-
+      this.finalCharge = charge;
+      this.showReceipt();
       console.log(`Vehicle ${vehicle.size} owes ${charge}PHP`);
     }
   }
@@ -117,6 +121,14 @@ export class AppComponent implements OnInit {
     }
 
     return totalCharge - vehicle.previouslyPaid;
+  }
+
+  private hideReceipt() {
+    if (this.receiptDiv) this.receiptDiv.nativeElement.style.visibility = 'hidden';
+  }
+
+  private showReceipt() {
+    if (this.receiptDiv) this.receiptDiv.nativeElement.style.visibility = 'visible';
   }
 
   private getEntranceNumber(): number {

@@ -17,6 +17,8 @@ export class AppComponent implements OnInit {
 
   entranceCount: number = 3;
   entranceQueues = [0, 0, 0];
+  existingVehicle!: Vehicle;
+  existingVehicles: Array<Vehicle> = [];
   finalCharge: number = 0;
   parkingSlots: Array<ParkingSlot> = [];
   vehicleSize: string = '';
@@ -35,9 +37,9 @@ export class AppComponent implements OnInit {
   }
 
   public parkVehicle(vehicleSize: string, dateInTest: Date = new Date()): void {
-    this.hideReceipt();
-    if (vehicleSize) {
-      const vehicle = new Vehicle(this.VEHICLE_SIZES.findIndex(size => size === vehicleSize));
+    this.hideReceipt();  // TODO: use form group
+    if (vehicleSize || this.existingVehicle) {
+      const vehicle = this.existingVehicle || new Vehicle(this.VEHICLE_SIZES.findIndex(size => size === vehicleSize));
       const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
       if (bestParkingSlot) {
         bestParkingSlot.assignVehicle(vehicle);
@@ -67,6 +69,7 @@ export class AppComponent implements OnInit {
         reservedSlot.removeVehicle();
         this.finalCharge = charge;
         this.showReceipt();
+        this.updateExistingVehicles(vehicle);
       }
     } catch (error: any) {
       alert(error.message);
@@ -140,5 +143,11 @@ export class AppComponent implements OnInit {
   private updateHtmlSlot(parkingSlotId: string, vehicleId: string) {
     document.getElementById(`slot${parkingSlotId}`)!.style.backgroundColor = 'pink';
     document.getElementById(`slot${parkingSlotId}`)!.textContent = vehicleId;
+  }
+
+  private updateExistingVehicles(vehicle: Vehicle) {
+    if (!this.existingVehicles.find(v => v.id === vehicle.id)) {
+      this.existingVehicles.push(vehicle);
+    }
   }
 }

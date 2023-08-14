@@ -71,6 +71,15 @@
             <input matInput type="time" placeholder="Select a clock out time" [(ngModel)]="clockOutTime"  name="timePicker">
         </mat-form-field>
         <br><br>
+        <mat-form-field *ngIf="existingVehicles.length > 0">
+            <mat-label>Previous Vehicles</mat-label>
+            <mat-select [(ngModel)]="existingVehicle" name="existingVehicle">
+                <mat-option *ngFor="let vehicle of existingVehicles" [value]="vehicle">
+                    {{vehicle.id}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <br><br>
         <mat-form-field>
             <mat-label>Vehicle size</mat-label>
             <mat-select [(ngModel)]="vehicleSize" name="vehicleSize">

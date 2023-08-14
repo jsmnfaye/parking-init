@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
   existingVehicle!: Vehicle;
   existingVehicles: Array<Vehicle> = [];
   finalCharge: number = 0;
+  parkedIds: Array<string> = [];
   parkingSlots: Array<ParkingSlot> = [];
   vehicleSize: string = '';
 
@@ -44,16 +45,16 @@ export class AppComponent implements OnInit {
   public parkVehicle(vehicleSize: string, dateInTest: Date = new Date()): void {
     this.hideReceipt();  // TODO: use form group
     if (vehicleSize || this.existingVehicle) {
-      const vehicle = this.existingVehicle || new Vehicle(this.VEHICLE_SIZES.findIndex(size => size === vehicleSize));
+      const vehicle = this.createVehicle(vehicleSize);
       const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
       if (bestParkingSlot) {
         bestParkingSlot.assignVehicle(vehicle);
         vehicle.setParkingSlot(bestParkingSlot.id);
         vehicle.setTimeIn(dateInTest || new Date());
         this.updateHtmlSlot(bestParkingSlot.id, vehicle.id);
+        this.parkedIds.push(vehicle.id);
       } else {
         alert('No more slots available!');
-        // TODO: must continue looking for other slots as long as there are available ones
       }
     } else {
       alert('Select a vehicle size!');
@@ -81,7 +82,21 @@ export class AppComponent implements OnInit {
     }
   }
 
-  getReservedParkingSlot(event: Event): ParkingSlot {
+  private createVehicle(vehicleSize: string) {
+    if (this.existingVehicle) return this.existingVehicle;
+
+    let vehicle;
+    while (!vehicle || vehicleIdExists(this, vehicle)) {
+      vehicle = new Vehicle(this.VEHICLE_SIZES.findIndex(size => size === vehicleSize))
+    }
+    return vehicle;
+
+    function vehicleIdExists(self: AppComponent, vehicle: Vehicle) {
+      return self.existingVehicles.map(v => v.id).includes(vehicle.id) || self.parkedIds.includes(vehicle.id);
+    }
+  }
+
+  private getReservedParkingSlot(event: Event): ParkingSlot {
     const vehicleId = (event.target as HTMLDivElement).textContent;
     const reservedSlot = this.parkingSlots.find(slot => slot.vehicle?.id === vehicleId);
     if (!reservedSlot) throw new Error(`Could not find reserved parking slot for vehicle #${vehicleId}!`);
@@ -120,7 +135,6 @@ export class AppComponent implements OnInit {
 
   private getBestParkingSlot(vehicleSize: number, entranceNumber: number): ParkingSlot | undefined {
     // Right now I'm prioritizing distance over size. Is this a good trade-off?
-    // 08.04.23: no, it's not a good trade-off hahaha
     const freeSlots = this.parkingSlots.filter(parkingSlot =>
       (parkingSlot.isAvailable && vehicleSize === 2 && parkingSlot.size === 2) ||
       (parkingSlot.isAvailable && vehicleSize === 1 && parkingSlot.size > 0) ||
@@ -151,6 +165,7 @@ export class AppComponent implements OnInit {
   }
 
   private updateExistingVehicles(vehicle: Vehicle) {
+    this.parkedIds.splice(this.parkedIds.findIndex(v => v === vehicle.id), 1);
     if (!this.existingVehicles.find(v => v.id === vehicle.id)) {
       this.existingVehicles.push(vehicle);
     }

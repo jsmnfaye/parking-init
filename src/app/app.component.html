@@ -57,10 +57,11 @@
             <div id="slot23" (click)="unparkVehicle($event)" class="parking-slot area-three">slot</div>
         </div>
     </div>
-    <div id="parkingForm">
+    <div class="parking-form">
         <mat-form-field>
             <mat-label>Choose CLOCK OUT date</mat-label>
-            <input matInput [matDatepicker]="picker" [min]="minClockOutDate" disabled [(ngModel)]="clockOutDate" name="datePicker">
+            <input matInput [matDatepicker]="picker" [min]="minClockOutDate" disabled [(ngModel)]="clockOutDate"
+                name="datePicker">
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker disabled="false"></mat-datepicker>
@@ -68,9 +69,11 @@
         <br><br>
         <mat-form-field>
             <mat-label>CLOCK OUT time</mat-label>
-            <input matInput type="time" placeholder="Select a clock out time" [(ngModel)]="clockOutTime"  name="timePicker">
+            <input matInput type="time" placeholder="Select a clock out time" [(ngModel)]="clockOutTime"
+                name="timePicker">
         </mat-form-field>
-        <br><br>
+    </div>
+    <div class="parking-form">
         <mat-form-field *ngIf="existingVehicles.length > 0">
             <mat-label>Previous Vehicles</mat-label>
             <mat-select [(ngModel)]="existingVehicle" name="existingVehicle">

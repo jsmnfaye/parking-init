@@ -63,6 +63,9 @@
         </div>
     </div>
     <div class="parking-form">
+        <p>Choose a custom date and time for unparking a <br>vehicle for testing purposes.</p>
+        <mat-divider></mat-divider>
+        <br>
         <mat-form-field>
             <mat-label>Choose CLOCK OUT date</mat-label>
             <input matInput [matDatepicker]="picker" [min]="minClockOutDate" disabled [(ngModel)]="clockOutDate"
@@ -81,6 +84,13 @@
         <button mat-stroked-button color="accent" (click)="clearClockOutSettings()">Clear</button>
     </div>
     <div class="parking-form">
+        <p>
+            You can either create a new vehicle by choosing<br>
+            a vehicle size, or select a vehicle that was previously<br>
+            parked.
+        </p>
+        <mat-divider></mat-divider>
+        <br>
         <mat-form-field *ngIf="existingVehicles.length > 0">
             <mat-label>Previous Vehicles</mat-label>
             <mat-select [(ngModel)]="existingVehicle" name="existingVehicle">
@@ -89,7 +99,7 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <br><br>
+        <br>
         <mat-form-field>
             <mat-label>Vehicle size</mat-label>
             <mat-select [(ngModel)]="vehicleSize" name="vehicleSize">

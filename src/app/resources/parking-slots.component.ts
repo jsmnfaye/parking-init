@@ -1,7 +1,7 @@
 export const PARKING_SLOTS = [
     {
         "distances": [4, 5, 6],
-        "size": 0
+        "size": 1
     },
     {
         "distances": [1, 2, 4],
@@ -13,6 +13,70 @@ export const PARKING_SLOTS = [
     },
     {
         "distances": [9, 1, 4],
+        "size": 0
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 0
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 2
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 1
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 1
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 0
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 1
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 0
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 2
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 1
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 1
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 0
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 0
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 0
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 0
+    },
+    {
+        "distances": [3, 2, 5],
+        "size": 1
+    },
+    {
+        "distances": [3, 2, 5],
         "size": 1
     },
     {
@@ -25,70 +89,6 @@ export const PARKING_SLOTS = [
     },
     {
         "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
-    },
-    {
-        "distances": [3, 2, 5],
-        "size": 2
+        "size": 0
     }
 ]

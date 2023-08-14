@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
   vehicleSize: string = '';
 
   minClockOutDate = new Date();
-  clockOutDate!: Date;
+  clockOutDate!: Date | null;
   clockOutTime: any = null;
 
   ngOnInit() {
@@ -34,6 +34,11 @@ export class AppComponent implements OnInit {
         new ParkingSlot((parseInt(idx) + 1).toString(), PARKING_SLOTS[idx].size, PARKING_SLOTS[idx].distances)
       );
     }
+  }
+
+  public clearClockOutSettings() {
+    this.clockOutDate = null;
+    this.clockOutTime = null;
   }
 
   public parkVehicle(vehicleSize: string, dateInTest: Date = new Date()): void {

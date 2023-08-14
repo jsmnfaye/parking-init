@@ -77,6 +77,8 @@
             <input matInput type="time" placeholder="Select a clock out time" [(ngModel)]="clockOutTime"
                 name="timePicker">
         </mat-form-field>
+        <br>
+        <button mat-stroked-button color="accent" (click)="clearClockOutSettings()">Clear</button>
     </div>
     <div class="parking-form">
         <mat-form-field *ngIf="existingVehicles.length > 0">
@@ -96,7 +98,7 @@
                 </mat-option>
             </mat-select>
         </mat-form-field><br>
-        <button mat-stroked-button color="primary" (click)="parkVehicle(vehicleSize)">Park Vehicle</button>
+        <button mat-stroked-button color="accent" (click)="parkVehicle(vehicleSize)">Park Vehicle</button>
         <br><br>
         <p #receiptText style="visibility: hidden;">You owe {{finalCharge}} PHP</p>
     </div>

@@ -134,14 +134,8 @@ export class AppComponent implements OnInit {
   }
 
   private getBestParkingSlot(vehicleSize: number, entranceNumber: number): ParkingSlot | undefined {
-    // Right now I'm prioritizing distance over size. Is this a good trade-off?
-    const freeSlots = this.parkingSlots.filter(parkingSlot =>
-      (parkingSlot.isAvailable && vehicleSize === 2 && parkingSlot.size === 2) ||
-      (parkingSlot.isAvailable && vehicleSize === 1 && parkingSlot.size > 0) ||
-      (parkingSlot.isAvailable && vehicleSize === 0 && parkingSlot.size >= 0)
-    );
-    const closestSlot = freeSlots.map(parkingSlot => parkingSlot.distances[entranceNumber]).sort()[0];
-    return freeSlots.find(parkingSlot => parkingSlot.distances[entranceNumber] === closestSlot);
+    const freeSlots = this.parkingSlots.filter(parkingSlot => parkingSlot.isAvailable && parkingSlot.size >= vehicleSize);
+    return freeSlots.sort((slot1, slot2) => slot1.distances[entranceNumber] - slot2.distances[entranceNumber])[0];
   }
 
   private resetHtmlSlot(elementId: string) {

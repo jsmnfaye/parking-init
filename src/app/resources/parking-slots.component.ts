@@ -60,7 +60,7 @@ export const PARKING_SLOTS = [
         "size": 0
     },
     {
-        "distances": [7, 2, 6],
+        "distances": [8, 2, 6],
         "size": 0
     },
     {

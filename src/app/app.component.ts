@@ -13,10 +13,6 @@ export class AppComponent implements OnInit {
   @ViewChild('receiptText') receiptDiv: ElementRef | undefined;
   public readonly VEHICLE_SIZES = ['small', 'medium', 'large'];
 
-  title = 'parking-system';
-
-  entranceCount: number = 3;
-  entranceQueues = [0, 0, 0];
   existingVehicle!: Vehicle;
   existingVehicles: Array<Vehicle> = [];
   finalCharge: number = 0;
@@ -49,7 +45,7 @@ export class AppComponent implements OnInit {
     this.clockOutTime = null;
   }
 
-  public parkVehicle(vehicleSize: string, dateInTest: Date = new Date()): void {
+  public parkVehicle(vehicleSize: string, dateInTest: Date = new Date()) {
     this.hideReceipt();  // TODO: use form group
     if (vehicleSize || this.existingVehicle) {
       const vehicle = this.createVehicle(vehicleSize);
@@ -58,6 +54,7 @@ export class AppComponent implements OnInit {
         bestParkingSlot.assignVehicle(vehicle);
         vehicle.setParkingSlot(bestParkingSlot.id);
         vehicle.setTimeIn(dateInTest || new Date());
+
         this.updateHtmlSlot(bestParkingSlot.id, vehicle.id);
         this.parkedIds.push(vehicle.id);
       } else {
@@ -80,8 +77,7 @@ export class AppComponent implements OnInit {
         this.resetHtmlSlot(slotHtmlId);
         vehicle.setClockOut(clockout, charge);
         reservedSlot.removeVehicle();
-        this.finalCharge = charge;
-        this.showReceipt();
+        this.showReceipt(charge);
         this.updateExistingVehicles(vehicle);
       }
     } catch (error: any) {
@@ -103,14 +99,14 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private getReservedParkingSlot(event: Event): ParkingSlot {
+  private getReservedParkingSlot(event: Event) {
     const vehicleId = (event.target as HTMLDivElement).textContent;
     const reservedSlot = this.parkingSlots.find(slot => slot.vehicle?.id === vehicleId);
     if (!reservedSlot) throw new Error(`Could not find reserved parking slot for vehicle #${vehicleId}!`);
     return reservedSlot;
   }
 
-  private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testDate: Date = new Date()): number {
+  private getTotalCharge(vehicle: Vehicle, parkingSlotSize: number, testDate: Date = new Date()) {
     const clockOut = testDate.getTime() || new Date().getTime();
     const timeInHours = ((clockOut - vehicle.timeIn.getTime()) / 1000) / 3600;
     const multiplier = [20, 60, 100];
@@ -131,11 +127,12 @@ export class AppComponent implements OnInit {
     if (this.receiptDiv) this.receiptDiv.nativeElement.style.visibility = 'hidden';
   }
 
-  private showReceipt() {
+  private showReceipt(charge: number) {
+    this.finalCharge = charge;
     if (this.receiptDiv) this.receiptDiv.nativeElement.style.visibility = 'visible';
   }
 
-  private getBestParkingSlot(vehicleSize: number, entranceNumber: number): ParkingSlot | undefined {
+  private getBestParkingSlot(vehicleSize: number, entranceNumber: number) {
     const freeSlots = this.parkingSlots.filter(parkingSlot => parkingSlot.isAvailable && parkingSlot.size >= vehicleSize);
     return freeSlots.sort((slot1, slot2) => slot1.distances[entranceNumber] - slot2.distances[entranceNumber])[0];
   }

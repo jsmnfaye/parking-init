@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
   finalCharge: number = 0;
   parkedIds: Array<string> = [];
   parkingSlots: Array<ParkingSlot> = [];
+  prioritizedEntrance: number = 0;
   vehicleSize: string = '';
 
   minClockOutDate = new Date();
@@ -37,6 +38,12 @@ export class AppComponent implements OnInit {
     }
   }
 
+  public chooseEntrance(entrance: number, event: Event) {
+    document.getElementsByName('entrance').forEach(element => element.style.backgroundColor = 'lightblue');
+    (event.target as HTMLDivElement).style.backgroundColor = 'lightgreen';
+    this.prioritizedEntrance = entrance;
+  }
+
   public clearClockOutSettings() {
     this.clockOutDate = null;
     this.clockOutTime = null;
@@ -46,7 +53,7 @@ export class AppComponent implements OnInit {
     this.hideReceipt();  // TODO: use form group
     if (vehicleSize || this.existingVehicle) {
       const vehicle = this.createVehicle(vehicleSize);
-      const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.getEntranceNumber());
+      const bestParkingSlot = this.getBestParkingSlot(vehicle.size, this.prioritizedEntrance);
       if (bestParkingSlot) {
         bestParkingSlot.assignVehicle(vehicle);
         vehicle.setParkingSlot(bestParkingSlot.id);
@@ -126,11 +133,6 @@ export class AppComponent implements OnInit {
 
   private showReceipt() {
     if (this.receiptDiv) this.receiptDiv.nativeElement.style.visibility = 'visible';
-  }
-
-  private getEntranceNumber(): number {
-    const queueCount = this.entranceQueues.sort((a, b) => b - a)[0];
-    return this.entranceQueues.findIndex(n => n === queueCount);
   }
 
   private getBestParkingSlot(vehicleSize: number, entranceNumber: number): ParkingSlot | undefined {

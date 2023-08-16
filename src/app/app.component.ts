@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
   @ViewChild('receiptText') receiptDiv: ElementRef | undefined;
   public readonly VEHICLE_SIZES = ['small', 'medium', 'large'];
 
-  existingVehicle!: Vehicle;
+  existingVehicle!: Vehicle | null;
   existingVehicles: Array<Vehicle> = [];
   finalCharge: number = 0;
   parkedIds: Array<string> = [];
@@ -57,6 +57,7 @@ export class AppComponent implements OnInit {
 
         this.updateHtmlSlot(bestParkingSlot.id, vehicle.id);
         this.parkedIds.push(vehicle.id);
+        this.removeExistingVehicles(vehicle.id);
       } else {
         alert('No more slots available!');
       }
@@ -92,6 +93,7 @@ export class AppComponent implements OnInit {
     while (!vehicle || vehicleIdExists(this, vehicle)) {
       vehicle = new Vehicle(this.VEHICLE_SIZES.findIndex(size => size === vehicleSize))
     }
+
     return vehicle;
 
     function vehicleIdExists(self: AppComponent, vehicle: Vehicle) {
@@ -150,6 +152,11 @@ export class AppComponent implements OnInit {
       if (clockout.getTime() < Date.now()) throw new Error('Invalid timestamp!');
     }
     return clockout;
+  }
+
+  private removeExistingVehicles(vehicleId: string) {
+    this.existingVehicles.splice(this.existingVehicles.findIndex(v => v.id === vehicleId));
+    this.existingVehicle = null;
   }
 
   private updateHtmlSlot(parkingSlotId: string, vehicleId: string) {

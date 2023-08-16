@@ -116,8 +116,9 @@ export class AppComponent implements OnInit {
 
     if (timeInHours >= 24) {
       totalCharge = 0;
-      totalCharge += Math.floor(timeInHours / 24) * 5000;                        // count 24-hour chunks
-      totalCharge += Math.ceil(timeInHours % 24) * multiplier[parkingSlotSize];  // count additional hours
+      totalCharge += Math.floor(timeInHours / 24) * 5000;  // count 24-hour chunks
+      totalCharge += Math.ceil(parseFloat((timeInHours % 24).toFixed(4))) * multiplier[parkingSlotSize];  // count additional hours
+      console.log(timeInHours % 24);
     } else if (timeInHours > 3) {
       totalCharge += Math.ceil(timeInHours - 3) * multiplier[parkingSlotSize];
     }
@@ -151,6 +152,10 @@ export class AppComponent implements OnInit {
       clockout.setHours(this.clockOutTime.split(':')[0]);
       clockout.setMinutes(this.clockOutTime.split(':')[1]);
       if (clockout.getTime() < Date.now()) throw new Error('Invalid timestamp!');
+    } else {
+      clockout.setHours(new Date().getHours());
+      clockout.setMinutes(new Date().getMinutes());
+      clockout.setSeconds(new Date().getSeconds());
     }
     return clockout;
   }

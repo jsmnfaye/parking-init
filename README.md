@@ -1,6 +1,12 @@
 # ParkingSystem
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.6.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.6. 
+
+The website features a simple parking lot map where you can create vehicles (small, medium, and large) and the system will automatically pick the nearest appropriate parking slot. There are three entrances (A, B, C), the default being entrance A, but this can be changed by pressing on any of the entrances on the parking lot map. 
+
+You can click on a parking slot to unpark a vehicle, after which the parking charge will be shown on the website as well. There is a flat rate of 40PHP for the first three hours, and every hour past that will incur an overstaying fee which depends on the parking slot size. Every 24 hours of overstay will incur 5,000PHP. Various parking slot times can be simulated by setting a clock out date and time, and choosing a previously parked vehicle.
+
+This project does not use any database for simplicity; thus, refreshing the page will only restart the web app. 
 
 ## Development server
 

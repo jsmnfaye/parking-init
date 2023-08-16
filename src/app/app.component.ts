@@ -75,7 +75,7 @@ export class AppComponent implements OnInit {
         const clockout = this.setClockOutDate(testDate);
         const charge = this.getTotalCharge(vehicle, reservedSlot.size, clockout);
 
-        this.resetHtmlSlot(slotHtmlId);
+        this.resetHtmlSlot(slotHtmlId, reservedSlot.size);
         vehicle.setClockOut(clockout, charge);
         reservedSlot.removeVehicle();
         this.showReceipt(charge);
@@ -139,8 +139,9 @@ export class AppComponent implements OnInit {
     return freeSlots.sort((slot1, slot2) => slot1.distances[entranceNumber] - slot2.distances[entranceNumber])[0];
   }
 
-  private resetHtmlSlot(elementId: string) {
-    document.getElementById(elementId)!.style.backgroundColor = 'lightyellow';
+  private resetHtmlSlot(elementId: string, parkingSlotSize: number) {
+    const colorMap = ['lightyellow', 'yellow', 'orange'];
+    document.getElementById(elementId)!.style.backgroundColor = colorMap[parkingSlotSize];
     document.getElementById(elementId)!.textContent = 'slot';
   }
 

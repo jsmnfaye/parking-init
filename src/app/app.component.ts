@@ -156,7 +156,10 @@ export class AppComponent implements OnInit {
   }
 
   private removeExistingVehicles(vehicleId: string) {
-    this.existingVehicles.splice(this.existingVehicles.findIndex(v => v.id === vehicleId));
+    const vehicleIdx = this.existingVehicles.findIndex(v => v.id === vehicleId);
+    if (vehicleIdx > -1) {
+      this.existingVehicles.splice(vehicleIdx, 1);
+    }
     this.existingVehicle = null;
   }
 
